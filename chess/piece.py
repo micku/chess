@@ -57,18 +57,25 @@ class Queen(DirectionMovementPiece):
         return 'Q'
 
 
-class Rook(Piece):
+class Rook(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
-        pass
+        movements = [(x, y)
+                for (x, y)
+                in itertools.permutations([0, 1, -1], 2)
+                if x != y * -1]
+        return self.iter_direction_threats(movements, board_size, position)
 
 
     def __str__(self):
         return 'R'
 
 
-class Bishop(Piece):
+class Bishop(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
-        pass
+        movements = [(x,y)
+                for (x,y)
+                in itertools.product(range(-1,2,2), repeat=2)]
+        return self.iter_direction_threats(movements, board_size, position)
 
 
     def __str__(self):

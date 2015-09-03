@@ -89,3 +89,53 @@ class TestPiece(unittest.TestCase):
                 count += 1
             self.assertEqual(count, result)
 
+
+    def test_rook_threats(self):
+        rook = Rook()
+        board_size = (5, 5)
+
+        combinations = (
+                ((0, 0), 8),
+                ((1, 1), 8),
+                ((2, 2), 8),
+                ((3, 3), 8),
+                ((4, 4), 8),
+                ((0, 2), 8),
+                ((0, 1), 8),
+                ((2, 1), 8),
+                )
+
+        for combination in combinations:
+            position = combination[0]
+            result = combination[1]
+            count = 0
+            for m in rook.iter_threats(board_size, position):
+                count += 1
+            self.assertEqual(count, result)
+
+
+
+    def test_bishop_threats(self):
+        bishop = Bishop()
+        board_size = (5, 5)
+
+        combinations = (
+                ((0, 0), 4),
+                ((1, 1), 6),
+                ((2, 2), 8),
+                ((3, 3), 6),
+                ((4, 4), 4),
+                ((0, 2), 4),
+                ((0, 1), 4),
+                ((2, 1), 6),
+                )
+
+        for combination in combinations:
+            position = combination[0]
+            result = combination[1]
+            count = 0
+            for m in bishop.iter_threats(board_size, position):
+                count += 1
+            self.assertEqual(count, result)
+
+
