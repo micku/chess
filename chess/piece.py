@@ -4,13 +4,29 @@ import itertools
 class Piece():
     """Interface for the pieces"""
     def iter_threats(self, board_size, position):
-        """Iterates the possible threats in a given board size
-        places in a given position"""
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         pass
 
 
 class DirectionMovementPiece(Piece):
+    """Class that defines pieces that move in directions until
+    the end of the board"""
     def iter_direction_threats(self, movements, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         for movement in movements:
             new_x = sum([movement[0], position[0]])
             new_y = sum([movement[1], position[1]])
@@ -22,7 +38,17 @@ class DirectionMovementPiece(Piece):
 
 
 class FixedMovementPiece(Piece):
+    """Class that defines pieces that move by a finite number
+    of combinations"""
     def iter_fixed_threats(self, movements, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         for movement in movements:
             new_x = sum([movement[0], position[0]])
             new_y = sum([movement[1], position[1]])
@@ -32,7 +58,16 @@ class FixedMovementPiece(Piece):
 
 
 class King(FixedMovementPiece):
+    """King piece class"""
     def iter_threats(self, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         movements = [(x,y)
                 for (x,y)
                 in itertools.product(range(-1,2), repeat=2)
@@ -45,7 +80,16 @@ class King(FixedMovementPiece):
 
 
 class Queen(DirectionMovementPiece):
+    """Queen piece class"""
     def iter_threats(self, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         movements = [(x,y)
                 for (x,y)
                 in itertools.product(range(-1,2), repeat=2)
@@ -58,7 +102,16 @@ class Queen(DirectionMovementPiece):
 
 
 class Rook(DirectionMovementPiece):
+    """Rook piece class"""
     def iter_threats(self, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         movements = [(x, y)
                 for (x, y)
                 in itertools.permutations([0, 1, -1], 2)
@@ -71,7 +124,16 @@ class Rook(DirectionMovementPiece):
 
 
 class Bishop(DirectionMovementPiece):
+    """Bishop piece class"""
     def iter_threats(self, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         movements = [(x,y)
                 for (x,y)
                 in itertools.product(range(-1,2,2), repeat=2)]
@@ -83,7 +145,16 @@ class Bishop(DirectionMovementPiece):
 
 
 class Knight(FixedMovementPiece):
+    """Knight piece class"""
     def iter_threats(self, board_size, position):
+        """Iterator for all the possible positions in the board
+        that can be reached by the piece
+        
+        :param board_size: Size of the chessboard
+        :type board_size: (x, y)
+        :param position: Position of the piece on the chessboard
+        :type position: (x, y)
+        """
         movements = [(x, y)
                 for (x, y)
                 in itertools.permutations([-1, 1, -2, 2], 2)
