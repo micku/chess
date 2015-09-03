@@ -59,9 +59,13 @@ class Bishop(Piece):
         return 'B'
 
 
-class Knight(Piece):
+class Knight(FixedMovementPiece):
     def iter_threats(self, board_size, position):
-        pass
+        movements = [(x, y)
+                for (x, y)
+                in itertools.permutations([-1, 1, -2, 2], 2)
+                if x != y * -1]
+        return self.iter_fixed_threats(movements, board_size, position)
 
 
     def __str__(self):
