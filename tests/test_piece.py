@@ -65,3 +65,27 @@ class TestPiece(unittest.TestCase):
                 count += 1
             self.assertEqual(count, result)
 
+
+    def test_queen_threats(self):
+        queen = Queen()
+        board_size = (5, 5)
+
+        combinations = (
+                ((0, 0), 12),
+                ((1, 1), 14),
+                ((2, 2), 16),
+                ((3, 3), 14),
+                ((4, 4), 12),
+                ((0, 2), 12),
+                ((0, 1), 12),
+                ((2, 1), 14),
+                )
+
+        for combination in combinations:
+            position = combination[0]
+            result = combination[1]
+            count = 0
+            for m in queen.iter_threats(board_size, position):
+                count += 1
+            self.assertEqual(count, result)
+

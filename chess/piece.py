@@ -9,6 +9,18 @@ class Piece():
         pass
 
 
+class DirectionMovementPiece(Piece):
+    def iter_direction_threats(self, movements, board_size, position):
+        for movement in movements:
+            new_x = sum([movement[0], position[0]])
+            new_y = sum([movement[1], position[1]])
+            if new_x >= 0 and new_x < board_size[0] and \
+                    new_y >= 0 and new_y < board_size[1]:
+                for x in self.iter_direction_threats([movement], board_size, (new_x, new_y)):
+                    yield x
+                yield (new_x, new_y)
+
+
 class FixedMovementPiece(Piece):
     def iter_fixed_threats(self, movements, board_size, position):
         for movement in movements:
@@ -32,9 +44,13 @@ class King(FixedMovementPiece):
         return 'K'
 
 
-class Queen(Piece):
+class Queen(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
-        pass
+        movements = [(x,y)
+                for (x,y)
+                in itertools.product(range(-1,2), repeat=2)
+                if not(x==0 and y==x)]
+        return self.iter_direction_threats(movements, board_size, position)
 
 
     def __str__(self):
