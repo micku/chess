@@ -3,6 +3,7 @@ import sys
 import os
 
 from chess import board
+from chess import piece
 
 
 class TestBoard(unittest.TestCase):
@@ -29,5 +30,17 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(squares_count, width*height)
 
-if __name__ == '__main__':
-    unittest.main()
+
+class TestBoardSquare(unittest.TestCase):
+
+    def test_string(self):
+        empty_square = board.BoardSquare((1,1))
+        self.assertEqual(' ', str(empty_square))
+
+        king_square = board.BoardSquare((1,1))
+        king_square.set_piece(piece.King())
+        self.assertEqual('K', str(king_square))
+
+        threat_square = board.BoardSquare((1,1))
+        threat_square.set_threat()
+        self.assertEqual(' ', str(threat_square))

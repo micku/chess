@@ -57,3 +57,7 @@ class BoardSquare:
     def is_occupied(self):
         """Returns whether the square is occupied or threat"""
         return self.is_threat or (self.piece is not None)
+
+
+    def __str__(self):
+        return ' ' if (self.is_threat or not self.is_occupied()) else str(self.piece)
