@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import click
 
+from board import Board
+from piece import King, Queen, Rook, Bishop, Knight
+from utils import create_pieces_list
+
 
 @click.command()
 @click.option('--width', prompt='Width of the board', type=int,
@@ -19,14 +23,17 @@ import click
         help='Number of knights to place on the board')
 def main(width, height, kings, queens, rooks, bishops, knights):
     """Calculate the number of different combinations of the board
-    given size and number of pieces"""
+    given size and number of pieces."""
     click.echo('Board size: {}x{}'.format(width, height))
 
-    calculate((width, height), None)
-
-
-def calculate(size, pieces):
-    pass
+    board = Board(width, height)
+    pieces = create_pieces_list(
+            kings=kings,
+            queens=queens,
+            rooks=rooks,
+            bishops=bishops,
+            knights=knights)
+    #board.add_piece(King(), x, y)
 
 
 if __name__ == '__main__':
