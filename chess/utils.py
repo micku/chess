@@ -1,22 +1,22 @@
-from chess import piece
+from piece import *
 
 
 def create_pieces_list(kings, queens, rooks, bishops, knights):
     pieces = []
 
     for king in range(kings):
-        pieces.append(piece.King())
+        pieces.append(King())
 
     for queen in range(queens):
-        pieces.append(piece.Queen())
+        pieces.append(Queen())
 
     for rook in range(rooks):
-        pieces.append(piece.Rook())
+        pieces.append(Rook())
 
     for bishop in range(bishops):
-        pieces.append(piece.Bishop())
+        pieces.append(Bishop())
 
     for knight in range(knights):
-        pieces.append(piece.Knight())
+        pieces.append(Knight())
 
     return pieces
