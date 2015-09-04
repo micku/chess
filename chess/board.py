@@ -53,24 +53,31 @@ class Board:
         return False
 
 
+    def _table_horiz_separator(self):
+        return '{}-{}'.format(
+                '-'*4*self.width,
+                os.linesep)
+
+
+    def _table_empty_line(self):
+        return '{}|{}'.format(
+                '|   '*self.width,
+                os.linesep)
+
+
     def __str__(self):
         ret = ''
         for row in self.chessboard:
-            ret += '-'*4*self.width
-            ret += '-'
-            ret += os.linesep
+            ret += self._table_horiz_separator() + \
+                    self._table_empty_line()
 
-            ret += '|   '*self.width
-            ret += '|{}'.format(os.linesep)
             for col in row:
                 ret += '| {} '.format(str(col))
             ret += '|{}'.format(os.linesep)
 
-            ret += '|   '*self.width
-            ret += '|{}'.format(os.linesep)
+            ret += self._table_empty_line()
 
-        ret += '-'*4*self.width
-        ret += '-'
+        ret += self._table_horiz_separator()
         return ret
 
 
