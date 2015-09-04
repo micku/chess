@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import click
 import copy
+import time
 
 from board import Board
 from piece import King, Queen, Rook, Bishop, Knight
@@ -27,6 +28,8 @@ def main(width, height, kings, queens, rooks, bishops, knights):
     given size and number of pieces."""
     click.echo('Board size: {}x{}'.format(width, height))
 
+    start_time = time.time()
+
     board = Board(width, height)
     pieces = create_pieces_list(
             kings=kings,
@@ -36,9 +39,13 @@ def main(width, height, kings, queens, rooks, bishops, knights):
             knights=knights)
     valid_boards = []
     valid_boards = calculate_combinations(valid_boards, board, pieces)
+
+    execution_time = time.time() - start_time
+
     for valid_board in valid_boards:
         click.echo(valid_board)
     click.echo('Found {} possible chessboards'.format(len(valid_boards)))
+    click.echo('Execution time: {}'.format(execution_time))
 
 
 def calculate_combinations(valid_boards, board, pieces):
