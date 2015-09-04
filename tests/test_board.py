@@ -30,6 +30,31 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(squares_count, width*height)
 
+    
+    def test_equality(self):
+        board1 = board.Board(4, 4)
+        board2 = board.Board(4, 3)
+        self.assertNotEqual(board1, board2)
+
+        board2 = board.Board(4, 4)
+        self.assertEqual(board1, board2)
+
+        board1.get_square((0, 0)).set_threat()
+        self.assertNotEqual(board1, board2)
+
+        board2.get_square((0, 0)).set_threat()
+        self.assertEqual(board1, board2)
+
+
+    def test_contains(self):
+        chessboard = board.Board(4, 4)
+        square = board.BoardSquare((1, 1))
+        square.set_threat()
+        self.assertFalse(square in chessboard)
+
+        chessboard.get_square((1, 1)).set_threat()
+        self.assertTrue(square in chessboard)
+
 
 class TestBoardSquare(unittest.TestCase):
 
