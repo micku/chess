@@ -26,7 +26,8 @@ class Board:
         """Iterates all the squares in the board."""
         for row in self.chessboard:
             for col in row:
-                yield col
+                if col.is_empty():
+                    yield col
 
 
     def get_square(self, position):
