@@ -33,7 +33,10 @@ def main(width, height, kings, queens, rooks, bishops, knights):
             rooks=rooks,
             bishops=bishops,
             knights=knights)
-    #board.add_piece(King(), x, y)
+
+
+def calculate_combinations(valid_boards, board, pieces):
+    pass
 
 
 if __name__ == '__main__':
