@@ -4,9 +4,6 @@ from piece import *
 def create_pieces_list(kings, queens, rooks, bishops, knights):
     pieces = []
 
-    for king in range(kings):
-        pieces.append(King())
-
     for queen in range(queens):
         pieces.append(Queen())
 
@@ -15,6 +12,9 @@ def create_pieces_list(kings, queens, rooks, bishops, knights):
 
     for bishop in range(bishops):
         pieces.append(Bishop())
+
+    for king in range(kings):
+        pieces.append(King())
 
     for knight in range(knights):
         pieces.append(Knight())
