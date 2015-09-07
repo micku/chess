@@ -68,7 +68,10 @@ class Board:
         if starting_position is None:
             starting_position = (0, 0)
         for row in self.chessboard[starting_position[1]:]:
-            for col in row[starting_position[0] if row[0].position[1]==starting_position[1] else 0:]:
+            start_in_row = starting_position[0] if \
+                    row[0].position[1]==starting_position[1] \
+                    else 0
+            for col in row[start_in_row:]:
                 if col.is_empty():
                     yield col
 
