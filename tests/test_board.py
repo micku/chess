@@ -56,6 +56,24 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(square in chessboard)
 
 
+    def test_add_squares(self):
+        chessboard = board.Board(4, 4)
+
+        tests = [
+                [(0,0), 1, (1, 0)],
+                [(0,0), 4, (0, 1)],
+                [(3,0), 1, (0, 1)],
+                [(0,0), 5, (1, 1)],
+                [(0,0), 1, (1, 0)],
+                [(0,0), 1, (1, 0)],
+                ]
+
+        for test in tests:
+            square = chessboard.add_to_position(test[0], test[1])
+            self.assertEqual(test[2], square)
+
+
+
 class TestBoardSquare(unittest.TestCase):
 
     def test_string(self):
