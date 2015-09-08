@@ -63,23 +63,23 @@ def put_piece(valid_boards, board, square_position, pieces):
     if square.is_occupied():
         return valid_boards
     piece = pieces[0]
-    square.set_piece(piece)
     for threat in piece.iter_threats(board.size, square.position):
         threat_square = board.get_square(threat)
         if threat_square.is_empty_or_threat():
             threat_square.set_threat()
         else:
             return valid_boards
+    square.set_piece(piece)
 
     if len(pieces[1:])<=0:
         valid_boards.append(board)
     else:
         next_square = board.add_to_position(square_position, 1)
-        if next_square is None:
-            return valid_boards
         starting_position = next_square \
                 if str(pieces[1]) == str(piece) \
                 else (0, 0)
+        if starting_position is None:
+            return valid_boards
         valid_boards = calculate_combinations(valid_boards, board, pieces[1:],
                 starting_position)
     return valid_boards
