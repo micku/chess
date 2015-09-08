@@ -61,7 +61,7 @@ class Board:
         """Iterates all the free squares in the board.
         
         :param starting_position: Tuple containing the position from
-        which start the loop
+        which the loop starts
         """
         if starting_position is None:
             starting_position = (0, 0)
@@ -101,7 +101,7 @@ class Board:
 
 
     def _table_horiz_separator(self):
-        """Helper method that returns an horizontal separator"""
+        """Helper method that returns an horizontal separator."""
         return '{}-{}'.format(
                 '-'*4*self.width,
                 os.linesep)
@@ -109,14 +109,14 @@ class Board:
 
     def _table_empty_line(self):
         """Helper method that returns an empty line
-        with vertical separators"""
+        with vertical separators."""
         return '{}|{}'.format(
                 '|   '*self.width,
                 os.linesep)
 
 
     def __str__(self):
-        """Returns the graphical representation of the chessboard"""
+        """Returns the graphical representation of the chessboard."""
         ret = ''
         for row in self.chessboard:
             ret += self._table_horiz_separator() + \
