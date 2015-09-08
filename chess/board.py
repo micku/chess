@@ -14,9 +14,9 @@ class Board:
         self.height = height
         self.size = (width, height)
         self.chessboard = []
-        for x in range(self.width):
+        for y in range(self.width):
             columns = []
-            for y in range(self.height):
+            for x in range(self.height):
                 columns.append(BoardSquare((x, y)))
             self.chessboard.append(columns)
         #self.chessboard = [['']*width]*height
@@ -30,8 +30,59 @@ class Board:
                     yield col
 
 
+    def add_to_position(self, position, squares):
+        """Returns the position plus a number of squares.
+        
+        :param position: Tuple containing the position from
+        which start the loop
+        :param squares: Number of squares to add
+        """
+        i = 0
+        for square in self.iter_squares(position):
+            if i == squares:
+                return square.position
+            i += 1
+        return None
+
+
+    def iter_squares(self, starting_position=None):
+        """Iterates all the squares in the board.
+        
+        :param starting_position: Tuple containing the position from
+        which start the loop
+        """
+        if starting_position is None:
+            starting_position = (0, 0)
+        for row in self.chessboard[starting_position[1]:]:
+            for col in row[starting_position[0]
+                    if row[0].position[1]==starting_position[1]
+                    else 0:]:
+                yield col
+
+
+    def iter_free_squares(self, starting_position=None):
+        """Iterates all the free squares in the board.
+        
+        :param starting_position: Tuple containing the position from
+        which start the loop
+        """
+        if starting_position is None:
+            starting_position = (0, 0)
+        for row in self.chessboard[starting_position[1]:]:
+            start_in_row = starting_position[0] if \
+                    row[0].position[1]==starting_position[1] \
+                    else 0
+            for col in row[start_in_row:]:
+                if col.is_empty():
+                    yield col
+
+
     def get_square(self, position):
-        return self.chessboard[position[0]][position[1]]
+        """Gets a single square given its position.
+
+        :param position: Tuple containing row and column
+        """
+        return self.chessboard[position[1]][position[0]]
 
 
     def __eq__(self, other):
@@ -55,18 +106,22 @@ class Board:
 
 
     def _table_horiz_separator(self):
+        """Helper method that returns an horizontal separator"""
         return '{}-{}'.format(
                 '-'*4*self.width,
                 os.linesep)
 
 
     def _table_empty_line(self):
+        """Helper method that returns an empty line
+        with vertical separators"""
         return '{}|{}'.format(
                 '|   '*self.width,
                 os.linesep)
 
 
     def __str__(self):
+        """Returns the graphical representation of the chessboard"""
         ret = ''
         for row in self.chessboard:
             ret += self._table_horiz_separator() + \
@@ -91,8 +146,8 @@ class BoardSquare:
         """Creates a new instance of BoardSquare
         assigning its position
         """
-        self.x = position[0]
-        self.y = position[1]
+        self.row = position[1]
+        self.col = position[0]
         self.position = position
 
 
@@ -130,4 +185,7 @@ class BoardSquare:
 
 
     def __str__(self):
-        return ' ' if (self.is_threat or not self.is_occupied()) else str(self.piece)
+        """Returns the representation of the square"""
+        return ' ' \
+                if (self.is_threat or not self.is_occupied()) \
+                else str(self.piece)

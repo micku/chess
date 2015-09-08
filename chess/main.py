@@ -48,9 +48,13 @@ def main(width, height, kings, queens, rooks, bishops, knights):
     click.echo('Execution time: {}'.format(execution_time))
 
 
-def calculate_combinations(valid_boards, board, pieces):
-    for square in board:
-        valid_boards = put_piece(valid_boards, copy.deepcopy(board), square.position, pieces[:])
+def calculate_combinations(valid_boards, board, pieces, previous_position=None):
+    for square in board.iter_free_squares(previous_position):
+        valid_boards = put_piece(
+                valid_boards,
+                copy.deepcopy(board),
+                square.position,
+                pieces[:])
     return valid_boards
 
 
@@ -66,12 +70,18 @@ def put_piece(valid_boards, board, square_position, pieces):
             threat_square.set_threat()
         else:
             return valid_boards
+
     if len(pieces[1:])<=0:
-        # TODO: Find a better way to manage double pieces
-        if board not in valid_boards:
-            valid_boards.append(board)
+        valid_boards.append(board)
     else:
-        valid_boards = calculate_combinations(valid_boards, copy.deepcopy(board), pieces[1:])
+        next_square = board.add_to_position(square_position, 1)
+        if next_square is None:
+            return valid_boards
+        starting_position = next_square \
+                if str(pieces[1]) == str(piece) \
+                else (0, 0)
+        valid_boards = calculate_combinations(valid_boards, board, pieces[1:],
+                starting_position)
     return valid_boards
 
 
