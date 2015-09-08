@@ -94,9 +94,7 @@ class Board:
 
     def __contains__(self, key):
         square = self.get_square(key.position)
-        if square.position[0] == key.position[0] and \
-            square.position[1] == key.position[1] and \
-            square.is_threat == key.is_threat and \
+        if square.is_threat == key.is_threat and \
             str(square) == str(key):
             return True
         return False
