@@ -14,9 +14,9 @@ class Board:
         self.height = height
         self.size = (width, height)
         self.chessboard = []
-        for y in range(self.width):
+        for y in range(self.height):
             columns = []
-            for x in range(self.height):
+            for x in range(self.width):
                 columns.append(BoardSquare((x, y)))
             self.chessboard.append(columns)
         #self.chessboard = [['']*width]*height
