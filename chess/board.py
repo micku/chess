@@ -24,10 +24,7 @@ class Board:
 
     def __iter__(self):
         """Iterates all the squares in the board."""
-        for row in self.chessboard:
-            for col in row:
-                if col.is_empty():
-                    yield col
+        return self.iter_squares()
 
 
     def add_to_position(self, position, squares):
@@ -96,12 +93,12 @@ class Board:
 
 
     def __contains__(self, key):
-        for square in self:
-            if square.position[0] == key.position[0] and \
-                square.position[1] == key.position[1] and \
-                square.is_threat == key.is_threat and \
-                str(square) == str(key):
-                return True
+        square = self.get_square(key.position)
+        if square.position[0] == key.position[0] and \
+            square.position[1] == key.position[1] and \
+            square.is_threat == key.is_threat and \
+            str(square) == str(key):
+            return True
         return False
 
 

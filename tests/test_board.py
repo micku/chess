@@ -48,11 +48,11 @@ class TestBoard(unittest.TestCase):
 
     def test_contains(self):
         chessboard = board.Board(4, 4)
-        square = board.BoardSquare((1, 1))
+        square = board.BoardSquare((1, 2))
         square.set_threat()
         self.assertFalse(square in chessboard)
 
-        chessboard.get_square((1, 1)).set_threat()
+        chessboard.get_square((1, 2)).set_threat()
         self.assertTrue(square in chessboard)
 
 
