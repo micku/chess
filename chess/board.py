@@ -1,7 +1,7 @@
 import os
 
 
-class Board:
+class Board(object):
     """Class that defines the chessboard."""
 
     def __init__(self, width, height):
@@ -14,10 +14,10 @@ class Board:
         self.height = height
         self.size = (width, height)
         self.chessboard = []
-        for y in range(self.height):
+        for row in range(self.height):
             columns = []
-            for x in range(self.width):
-                columns.append(BoardSquare((x, y)))
+            for col in range(self.width):
+                columns.append(BoardSquare((col, row)))
             self.chessboard.append(columns)
         #self.chessboard = [['']*width]*height
 
@@ -29,7 +29,7 @@ class Board:
 
     def add_to_position(self, position, squares):
         """Returns the position plus a number of squares.
-        
+
         :param position: Tuple containing the position from
         which start the loop
         :param squares: Number of squares to add
@@ -44,22 +44,22 @@ class Board:
 
     def iter_squares(self, starting_position=None):
         """Iterates all the squares in the board.
-        
+
         :param starting_position: Tuple containing the position from
         which start the loop
         """
         if starting_position is None:
             starting_position = (0, 0)
         for row in self.chessboard[starting_position[1]:]:
-            for col in row[starting_position[0]
-                    if row[0].position[1]==starting_position[1]
+            for col in row[starting_position[0] \
+                    if row[0].position[1] == starting_position[1] \
                     else 0:]:
                 yield col
 
 
     def iter_free_squares(self, starting_position=None):
         """Iterates all the free squares in the board.
-        
+
         :param starting_position: Tuple containing the position from
         which the loop starts
         """
@@ -67,7 +67,7 @@ class Board:
             starting_position = (0, 0)
         for row in self.chessboard[starting_position[1]:]:
             start_in_row = starting_position[0] if \
-                    row[0].position[1]==starting_position[1] \
+                    row[0].position[1] == starting_position[1] \
                     else 0
             for col in row[start_in_row:]:
                 if col.is_empty():
@@ -103,16 +103,18 @@ class Board:
     def _table_horiz_separator(self):
         """Helper method that returns an horizontal separator."""
         return '{}-{}'.format(
-                '-'*4*self.width,
-                os.linesep)
+            '-' * 4 * self.width,
+            os.linesep
+        )
 
 
     def _table_empty_line(self):
         """Helper method that returns an empty line
         with vertical separators."""
         return '{}|{}'.format(
-                '|   '*self.width,
-                os.linesep)
+            '|   ' * self.width,
+            os.linesep
+        )
 
 
     def __str__(self):
@@ -132,7 +134,7 @@ class Board:
         return ret
 
 
-class BoardSquare:
+class BoardSquare(object):
     """Class that contains a single square info."""
     is_threat = False
     piece = None

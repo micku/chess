@@ -1,12 +1,12 @@
 import itertools
 
 
-class Piece():
+class Piece(object):
     """Interface for the pieces"""
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
@@ -21,7 +21,7 @@ class DirectionMovementPiece(Piece):
     def iter_direction_threats(self, movements, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
@@ -32,8 +32,8 @@ class DirectionMovementPiece(Piece):
             new_y = sum([movement[1], position[1]])
             if new_x >= 0 and new_x < board_size[0] and \
                     new_y >= 0 and new_y < board_size[1]:
-                for x in self.iter_direction_threats([movement], board_size, (new_x, new_y)):
-                    yield x
+                for square in self.iter_direction_threats([movement], board_size, (new_x, new_y)):
+                    yield square
                 yield (new_x, new_y)
 
 
@@ -43,7 +43,7 @@ class FixedMovementPiece(Piece):
     def iter_fixed_threats(self, movements, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
@@ -62,16 +62,18 @@ class King(FixedMovementPiece):
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [(x,y)
-                for (x,y)
-                in itertools.product(range(-1,2), repeat=2)
-                if not(x==0 and y==x)]
+        movements = [
+            (col, row)
+            for (col, row)
+            in itertools.product(range(-1, 2), repeat=2)
+            if not(col == 0 and row == col)
+        ]
         return self.iter_fixed_threats(movements, board_size, position)
 
 
@@ -84,16 +86,18 @@ class Queen(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [(x,y)
-                for (x,y)
-                in itertools.product(range(-1,2), repeat=2)
-                if not(x==0 and y==x)]
+        movements = [
+            (col, row)
+            for (col, row)
+            in itertools.product(range(-1, 2), repeat=2)
+            if not(col == 0 and row == col)
+        ]
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -106,16 +110,18 @@ class Rook(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [(x, y)
-                for (x, y)
-                in itertools.permutations([0, 1, -1], 2)
-                if x != y * -1]
+        movements = [
+            (col, row)
+            for (col, row)
+            in itertools.permutations([0, 1, -1], 2)
+            if col != row * -1
+        ]
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -128,15 +134,17 @@ class Bishop(DirectionMovementPiece):
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [(x,y)
-                for (x,y)
-                in itertools.product(range(-1,2,2), repeat=2)]
+        movements = [
+            (col, row)
+            for (col, row)
+            in itertools.product(range(-1, 2, 2), repeat=2)
+        ]
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -149,16 +157,18 @@ class Knight(FixedMovementPiece):
     def iter_threats(self, board_size, position):
         """Iterator for all the possible positions in the board
         that can be reached by the piece
-        
+
         :param board_size: Size of the chessboard
         :type board_size: (x, y)
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [(x, y)
-                for (x, y)
-                in itertools.permutations([-1, 1, -2, 2], 2)
-                if x != y * -1]
+        movements = [
+            (col, row)
+            for (col, row)
+            in itertools.permutations([-1, 1, -2, 2], 2)
+            if col != row * -1
+        ]
         return self.iter_fixed_threats(movements, board_size, position)
 
 

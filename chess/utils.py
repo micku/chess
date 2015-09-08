@@ -1,4 +1,6 @@
-from piece import *
+"""Module containing helper classes."""
+
+from piece import Queen, Rook, Bishop, King, Knight
 
 
 def create_pieces_list(kings, queens, rooks, bishops, knights):
@@ -17,19 +19,19 @@ def create_pieces_list(kings, queens, rooks, bishops, knights):
     """
     pieces = []
 
-    for queen in range(queens):
+    for _ in xrange(queens):
         pieces.append(Queen())
 
-    for rook in range(rooks):
+    for _ in xrange(rooks):
         pieces.append(Rook())
 
-    for bishop in range(bishops):
+    for _ in xrange(bishops):
         pieces.append(Bishop())
 
-    for king in range(kings):
+    for _ in xrange(kings):
         pieces.append(King())
 
-    for knight in range(knights):
+    for _ in xrange(knights):
         pieces.append(Knight())
 
     return pieces
