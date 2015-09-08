@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+"""Module containing main iter logic and CLI"""
+
 import click
 import copy
 import time

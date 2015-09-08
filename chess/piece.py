@@ -1,3 +1,6 @@
+"""Module that contains all the pieces logic"""
+
+
 import itertools
 
 

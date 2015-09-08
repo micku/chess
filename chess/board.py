@@ -1,3 +1,5 @@
+"""Module that contains all board classes"""
+
 import os
 
 
