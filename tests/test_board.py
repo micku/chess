@@ -14,8 +14,8 @@ class TestBoard(unittest.TestCase):
 
         chessboard = board.Board(width, height)
 
-        self.assertEqual(width, len(chessboard.chessboard))
-        self.assertEqual(height, len(chessboard.chessboard[0]))
+        self.assertEqual(height, len(chessboard.chessboard))
+        self.assertEqual(width, len(chessboard.chessboard[0]))
 
 
     def test_iter(self):
@@ -66,12 +66,32 @@ class TestBoard(unittest.TestCase):
                 [(0,0), 5, (1, 1)],
                 [(0,0), 1, (1, 0)],
                 [(0,0), 1, (1, 0)],
+                [(2,3), 1, (3, 3)],
                 ]
 
         for test in tests:
             square = chessboard.add_to_position(test[0], test[1])
             self.assertEqual(test[2], square)
 
+
+    def test_iter_free_squares(self):
+        chessboard = board.Board(4, 4)
+        chessboard.get_square((2, 2)).set_piece(piece.Rook())
+
+        tests = [
+                [(0,0), 15],
+                [(3,0), 12],
+                [(0,1), 11],
+                [(1,3), 3],
+                [(2,3), 2],
+                [(3,3), 1],
+                ]
+
+        for test in tests:
+            i = 0
+            for square in chessboard.iter_free_squares(test[0]):
+                i += 1
+            self.assertEqual(test[1], i)
 
 
 class TestBoardSquare(unittest.TestCase):
