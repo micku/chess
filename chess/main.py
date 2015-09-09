@@ -41,7 +41,16 @@ from utils import create_pieces_list
     '--graphic', default=False, prompt='Print chessboards', type=bool,
     help='Print the chessboard configurations'
 )
-def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=None, knights=None, graphic=None):
+def main(
+        width=None,
+        height=None,
+        kings=None,
+        queens=None,
+        rooks=None,
+        bishops=None,
+        knights=None,
+        graphic=None
+    ):
     """Calculate the number of different combinations of the board
     given size and number of pieces."""
     click.echo('Board size: {}x{}'.format(width, height))
@@ -57,17 +66,16 @@ def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=N
         knights=knights
     )
     total_boards = 0
-    for _ in calculate_combinations(board, pieces):
-        total_boards += 1
-
+    if graphic:
+        for valid_board in calculate_combinations(board, pieces):
+            total_boards += 1
+            click.echo(valid_board)
+    else:
+        for _ in calculate_combinations(board, pieces):
+            total_boards += 1
 
     execution_time = time.time() - start_time
 
-    """
-    if graphic:
-        for valid_board in valid_boards:
-            click.echo(valid_board)
-    """
     click.echo('Found {} possible chessboards'.format(total_boards))
     click.echo('Execution time: {}'.format(execution_time))
 
@@ -95,15 +103,14 @@ def calculate_combinations(board, pieces, previous_position=None):
                     is_valid = False
                     break
             if is_valid:
-                state = board.get_chessboard_state()
                 position = square.position
                 for chessboard in put_piece(
-                    board.clone(),
-                    position,
-                    pieces,
-                    threats
+                        board.clone(),
+                        position,
+                        pieces,
+                        threats
                     ):
-                    yield board
+                    yield chessboard
 
 
 def put_piece(board, square_position, pieces, threats):
@@ -137,8 +144,8 @@ def put_piece(board, square_position, pieces, threats):
                 else (0, 0)
         if starting_position is not None:
             for chessboard in calculate_combinations(
-                board, pieces[1:],
-                starting_position
+                    board, pieces[1:],
+                    starting_position
                 ):
                 yield chessboard
 
