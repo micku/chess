@@ -71,12 +71,7 @@ class King(FixedMovementPiece):
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [
-            (col, row)
-            for (col, row)
-            in itertools.product(range(-1, 2), repeat=2)
-            if not(col == 0 and row == col)
-        ]
+        movements = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         return self.iter_fixed_threats(movements, board_size, position)
 
 
@@ -95,12 +90,7 @@ class Queen(DirectionMovementPiece):
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [
-            (col, row)
-            for (col, row)
-            in itertools.product(range(-1, 2), repeat=2)
-            if not(col == 0 and row == col)
-        ]
+        movements = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -119,12 +109,8 @@ class Rook(DirectionMovementPiece):
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [
-            (col, row)
-            for (col, row)
-            in itertools.permutations([0, 1, -1], 2)
-            if col != row * -1
-        ]
+        movements = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+ 
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -143,11 +129,7 @@ class Bishop(DirectionMovementPiece):
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [
-            (col, row)
-            for (col, row)
-            in itertools.product(range(-1, 2, 2), repeat=2)
-        ]
+        movements = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
         return self.iter_direction_threats(movements, board_size, position)
 
 
@@ -166,12 +148,7 @@ class Knight(FixedMovementPiece):
         :param position: Position of the piece on the chessboard
         :type position: (x, y)
         """
-        movements = [
-            (col, row)
-            for (col, row)
-            in itertools.permutations([-1, 1, -2, 2], 2)
-            if col != row * -1
-        ]
+        movements = [(-1, -2), (-1, 2), (1, -2), (1, 2), (-2, -1), (-2, 1), (2, -1), (2, 1)] 
         return self.iter_fixed_threats(movements, board_size, position)
 
 
