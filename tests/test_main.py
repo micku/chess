@@ -21,9 +21,10 @@ class TestMain(unittest.TestCase):
                 rooks=1,
                 bishops=0,
                 knights=0)
-        valid_boards = []
-        valid_boards = main.calculate_combinations(valid_boards, board, pieces)
-        self.assertEqual(len(valid_boards), 4)
+        total_boards = 0
+        for _ in main.calculate_combinations(board, pieces):
+            total_boards += 1
+        self.assertEqual(total_boards, 4)
 
         board = Board(4, 4)
         pieces = utils.create_pieces_list(
@@ -32,9 +33,10 @@ class TestMain(unittest.TestCase):
                 rooks=2,
                 bishops=0,
                 knights=4)
-        valid_boards = []
-        valid_boards = main.calculate_combinations(valid_boards, board, pieces)
-        self.assertEqual(len(valid_boards), 8)
+        total_boards = 0
+        for _ in main.calculate_combinations(board, pieces):
+            total_boards += 1
+        self.assertEqual(total_boards, 8)
 
 
 if __name__ == '__main__':

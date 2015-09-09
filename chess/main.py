@@ -4,7 +4,7 @@
 import click
 import time
 
-from board import Board
+from board import Board, BoardSquare
 from utils import create_pieces_list
 
 
@@ -56,45 +56,61 @@ def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=N
         bishops=bishops,
         knights=knights
     )
-    valid_boards = []
-    valid_boards = calculate_combinations(valid_boards, board, pieces)
+    total_boards = 0
+    for _ in calculate_combinations(board, pieces):
+        total_boards += 1
+
 
     execution_time = time.time() - start_time
 
+    """
     if graphic:
         for valid_board in valid_boards:
             click.echo(valid_board)
-    click.echo('Found {} possible chessboards'.format(len(valid_boards)))
+    """
+    click.echo('Found {} possible chessboards'.format(total_boards))
     click.echo('Execution time: {}'.format(execution_time))
 
 
-def calculate_combinations(valid_boards, board, pieces, previous_position=None):
+def calculate_combinations(board, pieces, previous_position=None):
     """Calculates the combinations with given parameters.
 
-    :param valid_boards: Array of completed and valid boards
-    :type valid_boards: list<Board>
     :param board: Current board to work on
-    :type valid_boards: Board
+    :type board: Board
     :param pieces: List of pieces left to place
     :type pieces: list<Piece>
     :param previous_position: First possible position for this piece
     :type previous_position: tuple
     """
     for square in board.iter_free_squares(previous_position):
-        valid_boards = put_piece(
-            valid_boards,
-            board.get_chessboard_state(),
-            square.position,
-            pieces[:]
-        )
-    return valid_boards
+        if not square.is_occupied():
+            is_valid = True
+            threats = []
+            piece = pieces[0]
+            for threat in piece.iter_threats(board.size, square.position):
+                threat_square = board.get_square(threat)
+                if threat_square.is_empty_or_threat():
+                    threats.append(threat_square.position)
+                    #threat_square.set_threat()
+                    #board.set_square(threat_square)
+                else:
+                    is_valid = False
+                    break
+            if is_valid:
+                state = board.get_chessboard_state()
+                position = square.position
+                for chessboard in put_piece(
+                    state,
+                    position,
+                    pieces,
+                    threats
+                    ):
+                    yield board
 
 
-def put_piece(valid_boards, board_state, square_position, pieces):
+def put_piece(board_state, square_position, pieces, threats):
     """Tries to put a piece on the given square position.
 
-    :param valid_boards: Array of completed and valid boards
-    :type valid_boards: list<Board>
     :param board_state: Current board to work on
     :type board_state: tuple
     :param square_position: Position to try to place the piece
@@ -104,33 +120,28 @@ def put_piece(valid_boards, board_state, square_position, pieces):
     """
     board = Board.from_chessboard_state(board_state)
     square = board.get_square(square_position)
-    if square.is_occupied():
-        return valid_boards
     piece = pieces[0]
-    for threat in piece.iter_threats(board.size, square.position):
-        threat_square = board.get_square(threat)
-        if threat_square.is_empty_or_threat():
-            threat_square.set_threat()
-            board.set_square(threat_square)
-        else:
-            return valid_boards
+    for threat in threats:
+        board_threat = BoardSquare(threat)
+        board_threat.set_threat()
+        board.set_square(board_threat)
+
     square.set_piece(piece)
     board.set_square(square)
 
     if len(pieces[1:]) <= 0:
-        valid_boards.append(board)
+        yield board
     else:
         next_square = board.add_to_position(square_position, 1)
         starting_position = next_square \
                 if str(pieces[1]) == str(piece) \
                 else (0, 0)
-        if starting_position is None:
-            return valid_boards
-        valid_boards = calculate_combinations(
-            valid_boards, board, pieces[1:],
-            starting_position
-        )
-    return valid_boards
+        if starting_position is not None:
+            for chessboard in calculate_combinations(
+                board, pieces[1:],
+                starting_position
+                ):
+                yield chessboard
 
 
 if __name__ == '__main__':
