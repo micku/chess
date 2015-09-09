@@ -19,6 +19,12 @@ class Board(object):
         self.chessboard = {}
 
 
+    def clone(self):
+        """Clones the board into a new object"""
+        state = self.get_chessboard_state()
+        return Board.from_chessboard_state(state)
+
+
     def get_chessboard_state(self):
         """Returns the actual state and info of the board."""
         return (self.size, copy.copy(self.chessboard))

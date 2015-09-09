@@ -91,8 +91,6 @@ def calculate_combinations(board, pieces, previous_position=None):
                 threat_square = board.get_square(threat)
                 if threat_square.is_empty_or_threat():
                     threats.append(threat_square.position)
-                    #threat_square.set_threat()
-                    #board.set_square(threat_square)
                 else:
                     is_valid = False
                     break
@@ -100,7 +98,7 @@ def calculate_combinations(board, pieces, previous_position=None):
                 state = board.get_chessboard_state()
                 position = square.position
                 for chessboard in put_piece(
-                    state,
+                    board.clone(),
                     position,
                     pieces,
                     threats
@@ -108,17 +106,18 @@ def calculate_combinations(board, pieces, previous_position=None):
                     yield board
 
 
-def put_piece(board_state, square_position, pieces, threats):
+def put_piece(board, square_position, pieces, threats):
     """Tries to put a piece on the given square position.
 
-    :param board_state: Current board to work on
-    :type board_state: tuple
-    :param square_position: Position to try to place the piece
+    :param board: Current board to work on
+    :type board: Board
+    :param square_position: Position to place the piece
     :type square_position: tuple
     :param pieces: List of pieces left to place
     :type pieces: list<Piece>
+    :param threats: Threats to be added to the cloned board
+    :type threats: list<tuple>
     """
-    board = Board.from_chessboard_state(board_state)
     square = board.get_square(square_position)
     piece = pieces[0]
     for threat in threats:
