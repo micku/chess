@@ -1,6 +1,7 @@
 """Module that contains all board classes"""
 
 import os
+import copy
 
 
 class Board(object):
@@ -15,13 +16,26 @@ class Board(object):
         self.width = width
         self.height = height
         self.size = (width, height)
-        self.chessboard = []
-        for row in range(self.height):
-            columns = []
-            for col in range(self.width):
-                columns.append(BoardSquare((col, row)))
-            self.chessboard.append(columns)
-        #self.chessboard = [['']*width]*height
+        self.chessboard = {}
+
+
+    def get_chessboard_state(self):
+        """Returns the actual state and info of the board."""
+        return (self.size, copy.copy(self.chessboard))
+
+
+    @staticmethod
+    def from_chessboard_state(state):
+        """Creates a new instance of Board given a state.
+
+        :param state: tuple created by get_chessboard_state
+        :type state: tuple
+        """
+        size = state[0]
+        chessboard = state[1]
+        new_board = Board(size[0], size[1])
+        new_board.chessboard = chessboard
+        return new_board
 
 
     def __iter__(self):
@@ -52,11 +66,13 @@ class Board(object):
         """
         if starting_position is None:
             starting_position = (0, 0)
-        for row in self.chessboard[starting_position[1]:]:
-            for col in row[starting_position[0] \
-                    if row[0].position[1] == starting_position[1] \
-                    else 0:]:
-                yield col
+        for row in xrange(starting_position[1], self.height):
+            for col in xrange(starting_position[0] \
+                if row == starting_position[1] \
+                else 0, self.width \
+                ):
+                yield self.chessboard.get('{},{}'.format(col, row)) \
+                    or BoardSquare((col, row))
 
 
     def iter_free_squares(self, starting_position=None):
@@ -65,15 +81,17 @@ class Board(object):
         :param starting_position: Tuple containing the position from
         which the loop starts
         """
-        if starting_position is None:
-            starting_position = (0, 0)
-        for row in self.chessboard[starting_position[1]:]:
-            start_in_row = starting_position[0] if \
-                    row[0].position[1] == starting_position[1] \
-                    else 0
-            for col in row[start_in_row:]:
-                if col.is_empty():
-                    yield col
+        for square in self.iter_squares(starting_position):
+            if square.is_empty():
+                yield square
+
+
+    def set_square(self, square):
+        """Sets a single square given its position.
+
+        :param position: Tuple containing row and column
+        """
+        self.chessboard['{},{}'.format(square.position[0], square.position[1])] = square
 
 
     def get_square(self, position):
@@ -81,25 +99,9 @@ class Board(object):
 
         :param position: Tuple containing row and column
         """
-        return self.chessboard[position[1]][position[0]]
-
-
-    def __eq__(self, other):
-        if self.width != other.width or \
-            self.height != other.height:
-            return False
-        for other_square in other:
-            if other_square not in self:
-                return False
-        return True
-
-
-    def __contains__(self, key):
-        square = self.get_square(key.position)
-        if square.is_threat == key.is_threat and \
-            str(square) == str(key):
-            return True
-        return False
+        #return self.chessboard[position[1]][position[0]]
+        return self.chessboard.get('{},{}'.format(position[0], position[1])) \
+                or BoardSquare((position[0], position[1]))
 
 
     def _table_horiz_separator(self):
@@ -156,13 +158,11 @@ class BoardSquare(object):
         :param piece: Piece to assigne to this square
         :type piece: chess.piece.Piece
         """
-        # TODO: Raise exception if is_threat
         self.piece = piece
 
 
     def set_threat(self):
         """Sets the square as threated"""
-        # TODO: Raise exception if occupied
         self.is_threat = True
 
 

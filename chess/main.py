@@ -2,7 +2,6 @@
 """Module containing main iter logic and CLI"""
 
 import click
-import copy
 import time
 
 from board import Board
@@ -38,7 +37,11 @@ from utils import create_pieces_list
     '--knights', default=0, prompt='Knights', type=int,
     help='Number of knights to place on the board'
 )
-def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=None, knights=None):
+@click.option(
+    '--graphic', default=False, prompt='Print chessboards', type=bool,
+    help='Print the chessboard configurations'
+)
+def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=None, knights=None, graphic=None):
     """Calculate the number of different combinations of the board
     given size and number of pieces."""
     click.echo('Board size: {}x{}'.format(width, height))
@@ -58,8 +61,9 @@ def main(width=None, height=None, kings=None, queens=None, rooks=None, bishops=N
 
     execution_time = time.time() - start_time
 
-    for valid_board in valid_boards:
-        click.echo(valid_board)
+    if graphic:
+        for valid_board in valid_boards:
+            click.echo(valid_board)
     click.echo('Found {} possible chessboards'.format(len(valid_boards)))
     click.echo('Execution time: {}'.format(execution_time))
 
@@ -79,25 +83,26 @@ def calculate_combinations(valid_boards, board, pieces, previous_position=None):
     for square in board.iter_free_squares(previous_position):
         valid_boards = put_piece(
             valid_boards,
-            copy.deepcopy(board),
+            board.get_chessboard_state(),
             square.position,
             pieces[:]
         )
     return valid_boards
 
 
-def put_piece(valid_boards, board, square_position, pieces):
+def put_piece(valid_boards, board_state, square_position, pieces):
     """Tries to put a piece on the given square position.
 
     :param valid_boards: Array of completed and valid boards
     :type valid_boards: list<Board>
-    :param board: Current board to work on
-    :type valid_boards: Board
+    :param board_state: Current board to work on
+    :type board_state: tuple
     :param square_position: Position to try to place the piece
     :type square_position: tuple
     :param pieces: List of pieces left to place
     :type pieces: list<Piece>
     """
+    board = Board.from_chessboard_state(board_state)
     square = board.get_square(square_position)
     if square.is_occupied():
         return valid_boards
@@ -106,9 +111,11 @@ def put_piece(valid_boards, board, square_position, pieces):
         threat_square = board.get_square(threat)
         if threat_square.is_empty_or_threat():
             threat_square.set_threat()
+            board.set_square(threat_square)
         else:
             return valid_boards
     square.set_piece(piece)
+    board.set_square(square)
 
     if len(pieces[1:]) <= 0:
         valid_boards.append(board)

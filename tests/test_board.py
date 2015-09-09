@@ -8,16 +8,6 @@ from chess import piece
 
 class TestBoard(unittest.TestCase):
 
-    def test_board_size(self):
-        width = 4
-        height = 5
-
-        chessboard = board.Board(width, height)
-
-        self.assertEqual(height, len(chessboard.chessboard))
-        self.assertEqual(width, len(chessboard.chessboard[0]))
-
-
     def test_iter(self):
         width = 4
         height = 5
@@ -29,31 +19,6 @@ class TestBoard(unittest.TestCase):
             self.assertIsInstance(square, board.BoardSquare)
 
         self.assertEqual(squares_count, width*height)
-
-    
-    def test_equality(self):
-        board1 = board.Board(4, 4)
-        board2 = board.Board(4, 3)
-        self.assertNotEqual(board1, board2)
-
-        board2 = board.Board(4, 4)
-        self.assertEqual(board1, board2)
-
-        board1.get_square((0, 0)).set_threat()
-        self.assertNotEqual(board1, board2)
-
-        board2.get_square((0, 0)).set_threat()
-        self.assertEqual(board1, board2)
-
-
-    def test_contains(self):
-        chessboard = board.Board(4, 4)
-        square = board.BoardSquare((1, 2))
-        square.set_threat()
-        self.assertFalse(square in chessboard)
-
-        chessboard.get_square((1, 2)).set_threat()
-        self.assertTrue(square in chessboard)
 
 
     def test_add_squares(self):
@@ -76,7 +41,9 @@ class TestBoard(unittest.TestCase):
 
     def test_iter_free_squares(self):
         chessboard = board.Board(4, 4)
-        chessboard.get_square((2, 2)).set_piece(piece.Rook())
+        square = board.BoardSquare((2, 2))
+        square.set_piece(piece.Rook())
+        chessboard.set_square(square)
 
         tests = [
                 [(0,0), 15],
@@ -94,16 +61,36 @@ class TestBoard(unittest.TestCase):
             self.assertEqual(test[1], i)
 
 
+    def test_chessboard_state(self):
+        chessboard = board.Board(4, 4)
+        square = board.BoardSquare((2, 2))
+        square.set_piece(piece.Rook())
+        chessboard.set_square(square)
+
+        state = chessboard.get_chessboard_state()
+        self.assertIsInstance(state[1], dict)
+        self.assertIsNotNone(state[1].get('2,2'))
+        self.assertIsNone(state[1].get('3,3'))
+        self.assertIsInstance(state[1].get('2,2'), board.BoardSquare)
+
+        chessboard2 = board.Board.from_chessboard_state(state)
+        self.assertEqual(chessboard2.size, (4, 4))
+        self.assertIsInstance(chessboard2.get_square((2, 2)).piece, piece.Rook)
+        self.assertTrue(chessboard2.get_square((0, 0)).is_empty())
+        self.assertEqual(str(chessboard2.get_square((2, 2))), 'R')
+
+
 class TestBoardSquare(unittest.TestCase):
 
     def test_string(self):
-        empty_square = board.BoardSquare((1,1))
+        default_position = (0, 0)
+        empty_square = board.BoardSquare(default_position)
         self.assertEqual(' ', str(empty_square))
 
-        king_square = board.BoardSquare((1,1))
+        king_square = board.BoardSquare(default_position)
         king_square.set_piece(piece.King())
         self.assertEqual('K', str(king_square))
 
-        threat_square = board.BoardSquare((1,1))
+        threat_square = board.BoardSquare(default_position)
         threat_square.set_threat()
         self.assertEqual(' ', str(threat_square))
