@@ -91,26 +91,25 @@ def calculate_combinations(board, pieces, previous_position=None):
     :type previous_position: tuple
     """
     for square in board.iter_free_squares(previous_position):
-        if not square.is_occupied():
-            is_valid = True
-            threats = []
-            piece = pieces[0]
-            for threat in piece.iter_threats(board.size, square.position):
-                threat_square = board.get_square(threat)
-                if threat_square.is_empty_or_threat():
-                    threats.append(threat_square.position)
-                else:
-                    is_valid = False
-                    break
-            if is_valid:
-                position = square.position
-                for chessboard in put_piece(
-                        board.clone(),
-                        position,
-                        pieces,
-                        threats
-                    ):
-                    yield chessboard
+        is_valid = True
+        threats = []
+        piece = pieces[0]
+        for threat in piece.iter_threats(board.size, square.position):
+            threat_square = board.get_square(threat)
+            if threat_square is None or threat_square.is_empty_or_threat():
+                threats.append(threat)
+            else:
+                is_valid = False
+                break
+        if is_valid:
+            position = square.position
+            for chessboard in put_piece(
+                    board,
+                    position,
+                    pieces,
+                    threats
+                ):
+                yield chessboard
 
 
 def put_piece(board, square_position, pieces, threats):
@@ -125,26 +124,27 @@ def put_piece(board, square_position, pieces, threats):
     :param threats: Threats to be added to the cloned board
     :type threats: list<tuple>
     """
-    square = board.get_square(square_position)
+    square = BoardSquare(square_position)
     piece = pieces[0]
-    for threat in threats:
-        board_threat = BoardSquare(threat)
-        board_threat.set_threat()
-        board.set_square(board_threat)
-
     square.set_piece(piece)
-    board.set_square(square)
-
     if len(pieces[1:]) <= 0:
+        board.set_square(square)
         yield board
+        board.clear_square(square_position)
     else:
-        next_square = board.add_to_position(square_position, 1)
-        starting_position = next_square \
+        new_board = board.clone()
+        new_board.set_square(square)
+        for threat in threats:
+            board_threat = BoardSquare(threat)
+            board_threat.set_threat()
+            new_board.set_square(board_threat)
+
+        starting_position = square_position \
                 if str(pieces[1]) == str(piece) \
                 else (0, 0)
         if starting_position is not None:
             for chessboard in calculate_combinations(
-                    board, pieces[1:],
+                    new_board, pieces[1:],
                     starting_position
                 ):
                 yield chessboard
