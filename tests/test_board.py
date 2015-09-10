@@ -76,7 +76,7 @@ class TestBoard(unittest.TestCase):
         chessboard2 = board.Board.from_chessboard_state(state)
         self.assertEqual(chessboard2.size, (4, 4))
         self.assertIsInstance(chessboard2.get_square((2, 2)).piece, piece.Rook)
-        self.assertTrue(chessboard2.get_square((0, 0)).is_empty())
+        self.assertIsNone(chessboard2.get_square((0, 0)))
         self.assertEqual(str(chessboard2.get_square((2, 2))), 'R')
 
 
