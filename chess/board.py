@@ -27,7 +27,7 @@ class Board(object):
 
     def get_chessboard_state(self):
         """Returns the actual state and info of the board."""
-        return (self.size, copy.copy(self.chessboard))
+        return (self.size, dict(self.chessboard))
 
 
     @staticmethod
@@ -95,9 +95,19 @@ class Board(object):
     def set_square(self, square):
         """Sets a single square given its position.
 
-        :param position: Tuple containing row and column
+        :param square: Square to place
+        :type square: BoardSquare
         """
         self.chessboard['{},{}'.format(square.position[0], square.position[1])] = square
+
+
+    def clear_square(self, position):
+        """Clears a single square.
+
+        :param position: Tuple containing column and row
+        :type position: tuple
+        """
+        del self.chessboard['{},{}'.format(position[0], position[1])]
 
 
     def get_square(self, position):
@@ -105,9 +115,7 @@ class Board(object):
 
         :param position: Tuple containing row and column
         """
-        #return self.chessboard[position[1]][position[0]]
-        return self.chessboard.get('{},{}'.format(position[0], position[1])) \
-                or BoardSquare((position[0], position[1]))
+        return self.chessboard.get('{},{}'.format(position[0], position[1]))
 
 
     def _table_horiz_separator(self):
@@ -130,12 +138,13 @@ class Board(object):
     def __str__(self):
         """Returns the graphical representation of the chessboard."""
         ret = ''
-        for row in self.chessboard:
+        for row in xrange(0, self.height):
             ret += self._table_horiz_separator() + \
                     self._table_empty_line()
 
-            for col in row:
-                ret += '| {} '.format(str(col))
+            for col in xrange(0, self.width):
+                col_id = '{},{}'.format(col, row)
+                ret += '| {} '.format(str(self.chessboard[col_id]) if col_id in self.chessboard else ' ')
             ret += '|{}'.format(os.linesep)
 
             ret += self._table_empty_line()
